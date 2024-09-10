@@ -198,7 +198,9 @@ With these prerequisites in place, you'll be ready to explore and run the demo s
 1. This demo uses Terraform  to spin up AWS resources that are needed.
     - Update the `main.tf` file to adjust the resource names if necessary. Ensure you use the same region as selected during the Confluent Cloud cluster creation step.
 2. Update the `client.properties` file located in the `scripts/lambda-valid-reviews` and `scripts/lambda-review-bombing folders` by replacing the placeholders with the values collected from previous steps.
-3. Navigate to the `scripts/lambda-valid-reviews`, `scripts/lambda-review-bombing` and `/scripts/lambda-static-fake-reviews` folders, then execute the commands `zip -r lambda_valid_reviews.zip .`, `zip -r lambda_review_bombing.zip .` and `zip -r lambda_static_fake_reviews.zip .`. Verify that the resulting zip files are located at `/scripts/lambda-valid-reviews/lambda_valid_reviews.zip`, `/scripts/lambda-review-bombing/lambda_review_bombing.zip` and `/scripts/lambda-static-fake-reviews/lambda_static_fake_reviews.zip`.
+3. Navigate to the `scripts/lambda-valid-reviews`, `scripts/lambda-review-bombing` and `/scripts/lambda-static-fake-reviews` folders, then execute the commands `zip -r lambda_valid_reviews.zip .`, `zip -r lambda_review_bombing.zip .` and `zip -r lambda_static_fake_reviews.zip .`
+
+     Verify that the resulting zip files are located at `/scripts/lambda-valid-reviews/lambda_valid_reviews.zip`, `/scripts/lambda-review-bombing/lambda_review_bombing.zip` and `/scripts/lambda-static-fake-reviews/lambda_static_fake_reviews.zip`
 4. Initialize Terraform.
     ```
     terraform init
