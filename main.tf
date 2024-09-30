@@ -3,11 +3,13 @@
 # Provider configuration for AWS
 provider "aws" {
   region = "us-east-2"  # Replace with your desired AWS region
+  profile = "gameday"
 }
 
 # Resource definition for S3 bucket
 resource "aws_s3_bucket" "confluent_mongo_aws_demo_bucket" {
-  bucket = "confluent-mongo-aws-demo"  # Replace with your desired bucket name
+  bucket = "confluent-mongo-aws-genai"  # Replace awwith your desired bucket name
+  force_destroy =  true
 }
 
 # Define IAM policy for CloudWatch Logs
@@ -34,7 +36,7 @@ resource "aws_iam_policy" "confluent_mongo_aws_cloudwatch_logs_policy" {
 
 # Define the IAM Role for Lambda 1
 resource "aws_iam_role" "confluent_mongo_aws_lambda_role_1" {
-  name               = "confluent-mongo-aws-lambda-1-role"
+  name               = "lambda_valid_reviews-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -72,7 +74,7 @@ resource "aws_iam_policy_attachment" "lambda1_cloudwatch_logs_attachment" {
 
 # Define the IAM Role for Lambda 2
 resource "aws_iam_role" "confluent_mongo_aws_lambda_role_2" {
-  name               = "confluent-mongo-aws-lambda-2-role"
+  name               = "lambda_review_bombing-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -110,7 +112,7 @@ resource "aws_iam_policy_attachment" "lambda2_cloudwatch_logs_attachment" {
 
 # Define the IAM Role for Lambda 3
 resource "aws_iam_role" "confluent_mongo_aws_lambda_role_3" {
-  name               = "confluent-mongo-aws-lambda-3-role"
+  name               = "lambda_static_fake_reviews-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -159,7 +161,7 @@ resource "aws_lambda_layer_version" "python3_layer" {
 
 # Define the Lambda Function for Valid Reviews
 resource "aws_lambda_function" "confluent_mongo_aws_lambda_1" {
-  function_name    = "confluent-mongo-aws-lambda-1"
+  function_name    = "lambda_valid_reviews"
   role             = aws_iam_role.confluent_mongo_aws_lambda_role_1.arn
   handler          = "lambda_function.lambda_handler"
   runtime          = "python3.11"
@@ -170,7 +172,11 @@ resource "aws_lambda_function" "confluent_mongo_aws_lambda_1" {
   filename = "./scripts/lambda-valid-reviews/lambda_valid_reviews.zip"
 
   layers = [aws_lambda_layer_version.python3_layer.arn]
-
+  environment {
+    variables = {
+      BUCKET_NAME = aws_s3_bucket.confluent_mongo_aws_demo_bucket.id
+    }
+  }
   tracing_config {
     mode = "PassThrough"
   }
@@ -178,7 +184,7 @@ resource "aws_lambda_function" "confluent_mongo_aws_lambda_1" {
 
 # Define the Lambda Function for Invalid Reviews
 resource "aws_lambda_function" "confluent_mongo_aws_lambda_2" {
-  function_name    = "confluent-mongo-aws-lambda-2"
+  function_name    = "lambda_review_bombing"
   role             = aws_iam_role.confluent_mongo_aws_lambda_role_2.arn
   handler          = "lambda_function.lambda_handler"
   runtime          = "python3.11"
@@ -189,7 +195,11 @@ resource "aws_lambda_function" "confluent_mongo_aws_lambda_2" {
   filename = "./scripts/lambda-review-bombing/lambda_review_bombing.zip"
 
   layers = [aws_lambda_layer_version.python3_layer.arn]
-  
+  environment {
+    variables = {
+      BUCKET_NAME = aws_s3_bucket.confluent_mongo_aws_demo_bucket.id
+    }
+  }
   tracing_config {
     mode = "PassThrough"
   }
@@ -197,7 +207,7 @@ resource "aws_lambda_function" "confluent_mongo_aws_lambda_2" {
 
 # Define the Lambda Function for Static Fake Reviews
 resource "aws_lambda_function" "confluent_mongo_aws_lambda_3" {
-  function_name    = "confluent-mongo-aws-lambda-3"
+  function_name    = "lambda_static_fake_reviews"
   role             = aws_iam_role.confluent_mongo_aws_lambda_role_3.arn
   handler          = "lambda_function.lambda_handler"
   runtime          = "python3.11"
@@ -208,7 +218,11 @@ resource "aws_lambda_function" "confluent_mongo_aws_lambda_3" {
   filename = "./scripts/lambda-static-fake-reviews/lambda_static_fake_reviews.zip"
 
   layers = [aws_lambda_layer_version.python3_layer.arn]
-
+  environment {
+    variables = {
+      BUCKET_NAME = aws_s3_bucket.confluent_mongo_aws_demo_bucket.id
+    }
+  }
   tracing_config {
     mode = "PassThrough"
   }
