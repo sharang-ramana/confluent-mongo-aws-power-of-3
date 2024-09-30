@@ -6,9 +6,14 @@ from confluent_kafka.serialization import SerializationContext, MessageField
 from confluent_kafka.schema_registry import SchemaRegistryClient, Schema
 from confluent_kafka.schema_registry.avro import AvroSerializer
 from datetime import datetime
+import os
 
 # S3 Bucket Configuration
-S3_BUCKET_NAME = 'confluent-mongo-aws-demo'  # Replace with your bucket name
+
+
+S3_BUCKET_NAME = os.getenv('BUCKET_NAME')  # Replace with your bucket name
+#S3_BUCKET_NAME = 'confluent-mongo-aws-genai'  # Replace with your bucket name
+
 CATEGORIES = [
     'All_Beauty',
     'Appliances',

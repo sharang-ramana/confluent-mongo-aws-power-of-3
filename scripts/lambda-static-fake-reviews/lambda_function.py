@@ -6,12 +6,14 @@ from confluent_kafka import Producer
 from confluent_kafka.serialization import SerializationContext, MessageField
 from confluent_kafka.schema_registry import SchemaRegistryClient, Schema
 from confluent_kafka.schema_registry.avro import AvroSerializer
+import os
 
 # AWS S3 client
 s3 = boto3.client('s3')
 
 # Define S3 bucket and key details
-bucket_name = 'confluent-mongo-aws-demo'
+bucket_name = os.getenv('BUCKET_NAME')
+#bucket_name = 'confluent-mongo-aws-genai'
 
 # Define Avro schemas for key and value
 key_schema_str = """
